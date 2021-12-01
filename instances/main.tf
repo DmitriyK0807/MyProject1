@@ -197,7 +197,7 @@ resource "aws_instance" "Private_servers" {
   vpc_security_group_ids = [aws_security_group.private.id]
   subnet_id              = data.terraform_remote_state.network.outputs.private_subnet_ids[count.index]
   availability_zone      = data.aws_availability_zones.available.names[count.index]
-  key_name   = "private_servers_key_pair${count.index + 1}"
+  key_name   = "SSH_key_for_My_Test_Servers"
 
   tags = {
     Name = "${var.name}private-server ${count.index + 1}"
@@ -235,7 +235,7 @@ resource "aws_instance" "DB" {
   vpc_security_group_ids = [aws_security_group.DB.id]
   subnet_id              = data.terraform_remote_state.network.outputs.DB_subnet_ids[count.index]
   availability_zone      = data.aws_availability_zones.available.names[count.index]
-  key_name   = "DB_servers_key_pair${count.index + 1}"
+  key_name   = "SSH_key_for_My_Test_Servers"
 
   tags = {
     Name = "${var.name}DB-server ${count.index + 1}"
@@ -262,31 +262,4 @@ resource "aws_security_group" "DB" {
   tags = {
     Name = "${var.name}DB-server-sg"
   }
-}
-
-#===============================================================================================================
-#Security_keys_for_DB_and_private_servers
-
-resource "tls_private_key" "gen_ssh_key_for_private_servers" {
-  count = length(data.terraform_remote_state.network.outputs.private_subnet_ids)
-  algorithm   = "RSA"
-  rsa_bits = 4096
-}
-
-resource "aws_key_pair" "private_servers_key_pair" {
-  count = length(data.terraform_remote_state.network.outputs.private_subnet_ids)
-  key_name   = "private_servers_key_pair${count.index + 1}"
-  public_key = tls_private_key.gen_ssh_key_for_private_servers.public_key_openssh[count.index]
-}
-
-resource "tls_private_key" "gen_ssh_key_for_DB_servers" {
-  count = length(data.terraform_remote_state.network.outputs.DB_subnet_ids)
-  algorithm   = "RSA"
-  rsa_bits = 4096
-}
-
-resource "aws_key_pair" "DB_servers_key_pair" {
-  count = length(data.terraform_remote_state.network.outputs.DB_subnet_ids)
-  key_name   = "DB_servers_key_pair${count.index + 1}"
-  public_key = tls_private_key.gen_ssh_key_for_DB_servers.public_key_openssh[count.index]
 }
