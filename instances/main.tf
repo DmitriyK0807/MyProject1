@@ -140,7 +140,7 @@ resource "aws_autoscaling_group" "BH" {
   min_size                  = 1
   desired_capacity          = 1
   max_size                  = 1
-  vpc_zone_identifier       = [data.terraform_remote_state.network.outputs.public_subnet_ids[]]
+  vpc_zone_identifier       = [data.terraform_remote_state.network.outputs.public_subnet_ids[0]]
   health_check_type         = "EC2"
   wait_for_capacity_timeout = "5m"
 
@@ -193,7 +193,7 @@ resource "aws_instance" "Private_servers" {
   vpc_security_group_ids = [aws_security_group.private.id]
   subnet_id              = data.terraform_remote_state.network.outputs.private_subnet_ids[count.index]
   availability_zone      = data.aws_availability_zones.available.names[count.index]
-  key_name   = "SSH_key_for_My_Test_Servers"
+  key_name               = "SSH_key_for_My_Test_Servers"
 
   tags = {
     Name = "${var.name}private-server ${count.index + 1}"
@@ -231,7 +231,7 @@ resource "aws_instance" "DB" {
   vpc_security_group_ids = [aws_security_group.DB.id]
   subnet_id              = data.terraform_remote_state.network.outputs.DB_subnet_ids[count.index]
   availability_zone      = data.aws_availability_zones.available.names[count.index]
-  key_name   = "SSH_key_for_My_Test_Servers"
+  key_name               = "SSH_key_for_My_Test_Servers"
 
   tags = {
     Name = "${var.name}DB-server ${count.index + 1}"
