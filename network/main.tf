@@ -58,17 +58,18 @@ resource "aws_subnet" "DB_subnets" {
 #========================================================================================================
 #EIP_and_NAT
 resource "aws_eip" "eip" {
-  count             = length(var.private_subnet_cidrs)
+  count      = length(var.private_subnet_cidrs)
   depends_on = [aws_internet_gateway.main]
 }
 resource "aws_nat_gateway" "NAT" {
-  count             = length(var.private_subnet_cidrs)
+  count         = length(var.private_subnet_cidrs)
   allocation_id = element(aws_eip.eip[*].id, count.index)
   subnet_id     = element(aws_subnet.public_subnets[*].id, count.index)
 
   tags = {
     Name = "${var.name}NAT-${count.index + 1}"
   }
+}
 #=======================================================================================================
 #Public_routes
 resource "aws_route_table" "public_subnets" {
@@ -91,10 +92,10 @@ resource "aws_route_table_association" "public_routes" {
 #Private_routes
 
 resource "aws_route_table" "private_subnets" {
-  count             = length(var.private_subnet_cidrs)
+  count  = length(var.private_subnet_cidrs)
   vpc_id = aws_vpc.main.id
   route {
-    cidr_block = "0.0.0.0/0"
+    cidr_block     = "0.0.0.0/0"
     nat_gateway_id = element(aws_nat_gateway.NAT[*].id, count.index)
   }
   tags = {
