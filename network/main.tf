@@ -1,7 +1,11 @@
+provider "aws" {
+  region = "eu-central-1"
+}
+
 terraform {
   backend "s3" {
     bucket = "bucket-for-my-testproject1"
-    key    = "my-testproject1/network/terraform.tfstate"
+    key    = "my-testproject1/network2/terraform.tfstate"
     region = "eu-central-1"
   }
 }

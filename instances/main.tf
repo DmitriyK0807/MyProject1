@@ -1,7 +1,11 @@
+provider "aws" {
+  region = "eu-central-1"
+}
+
 terraform {
   backend "s3" {
     bucket = "bucket-for-my-testproject1"
-    key    = "my-testproject1/instances/terraform.tfstate"
+    key    = "my-testproject1/instances2/terraform.tfstate"
     region = "eu-central-1"
   }
 }
@@ -13,7 +17,7 @@ data "terraform_remote_state" "network" {
   backend = "s3"
   config = {
     bucket = "bucket-for-my-testproject1"
-    key    = "my-testproject1/network/terraform.tfstate"
+    key    = "my-testproject1/network2/terraform.tfstate"
     region = "eu-central-1"
   }
 }
@@ -69,9 +73,9 @@ resource "aws_autoscaling_group" "web" {
 }
 
 resource "aws_elb" "ELB" {
-  name               = "terraform-elb"
-  availability_zones = ["eu-central-1a", "eu-central-1b"]
-  security_groups    = [aws_security_group.web.id]
+  name            = "terraform-elb"
+  security_groups = [aws_security_group.webserver.id]
+  subnets         = [data.terraform_remote_state.network.outputs.public_subnet_ids[0]]
   listener {
     instance_port     = 80
     instance_protocol = "http"
