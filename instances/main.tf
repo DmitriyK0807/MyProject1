@@ -140,7 +140,7 @@ resource "aws_autoscaling_group" "BH" {
   min_size                  = 1
   desired_capacity          = 1
   max_size                  = 1
-  vpc_zone_identifier       = data.terraform_remote_state.network.outputs.public_subnet_ids[]
+  vpc_zone_identifier       = [data.terraform_remote_state.network.outputs.public_subnet_ids[]]
   health_check_type         = "EC2"
   wait_for_capacity_timeout = "5m"
 
