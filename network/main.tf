@@ -1,7 +1,3 @@
-provider "aws" {
-  region = "eu-central-1"
-}
-
 terraform {
   backend "s3" {
     bucket = "bucket-for-my-testproject1"
