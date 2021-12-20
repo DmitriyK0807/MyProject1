@@ -1,0 +1,44 @@
+---
+- name: Setting up a DBserver for work
+  hosts: DB_SERVERS
+  become: yes
+
+  vars:
+     source_folder1: ../docker/
+     destin_folder1: ./docker/
+
+  tasks:
+   - name: copy docker files
+     copy: src={{ item }} dest={{ destin_folder1 }} mode=0555
+     with_fileglob: "{{ source_folder1 }}/*.*"
+
+   - name: updating repositories
+     shell: yum -y update
+
+   - name: install docker
+     shell: amazon-linux-extras install docker -y
+
+   - name: start docker
+     service: name=docker state=started enabled=yes
+
+   - name: docker check
+     shell: docker --version
+     register: results1
+
+   - name: docker check output
+     debug:
+       var: results1
+
+   - name: unpacking dbimage
+     shell: docker load -i ./docker/dockerimagedb.tar
+
+   - name: starting db container
+     shell: docker run --name mariadb1 -e MYSQL_ROOT_PASSWORD="{{ passwd }}" -d mariadb:10.3
+
+   - name: docker container check
+     shell: docker ps -a
+     register: results2
+
+   - name: docker container check output
+     debug:
+       var: results2

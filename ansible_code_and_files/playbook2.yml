@@ -1,0 +1,40 @@
+---
+- name: Setting up a bastionhost server for work with other servers
+  hosts: BASTIONHOST
+  become: yes
+
+  vars:
+   source_file1: ./files_for_bastionhost/private/index2.html
+   source_folder1: ./files_for_bastionhost/public/
+   source_folder2: ./files_for_bastionhost/
+   source_file2: ./files_for_bastionhost/sshkey/SSH_key_for_My_Test_Servers.pem
+   source_file3: ./files_for_bastionhost/public/html/index1.html
+   destin_folder1: ./private_server/
+   destin_folder2: ./public_server/
+   destin_folder3: ./.ssh/
+   destin_folder4: ./ansible/
+   destin_folder5: ./public_server/html/
+
+  tasks:
+   - name: updating repositories
+     shell: yum -y update
+
+   - name: install ansible
+     shell: sudo amazon-linux-extras install ansible2 -y
+
+   - name: copy private .html file
+     copy: src={{ source_file1 }} dest={{ destin_folder1 }} mode=0555
+
+   - name: copy public .html file
+     copy: src={{ source_file3 }} dest={{ destin_folder5 }} mode=0555
+
+   - name: copy public web files
+     copy: src={{ item }} dest={{ destin_folder2 }} mode=0555
+     with_fileglob: "{{ source_folder1 }}/*.*"
+
+   - name: copy ssh-key file
+     copy: src={{ source_file2 }} dest={{ destin_folder3 }} mode=0555
+
+   - name: copy ansible files
+     copy: src={{ item }} dest={{ destin_folder4 }} mode=0555
+     with_fileglob: "{{ source_folder2 }}/*.*"

@@ -1,0 +1,13 @@
+---
+- name: Copy dockerfiles
+  hosts: BASTIONHOST
+  become: yes
+
+  vars:
+     source_folder3: ./files_for_bastionhost/dockerfiles/
+     destin_folder6: ./docker/
+
+  tasks:
+   - name: copy docker files
+     copy: src={{ item }} dest={{ destin_folder6 }} mode=0555
+     with_fileglob: "{{ source_folder3 }}/*.*"

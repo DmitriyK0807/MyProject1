@@ -1,0 +1,14 @@
+[DB_SERVERS]
+3.69.43.181
+[WEB_SERVERS]
+[PRIV_SERVERS]
+[MY_SERVERS:children]
+WEB_SERVERS
+PRIV_SERVERS
+DB_SERVERS
+[MY_SERVERS:vars]
+ansible_user=ec2-user
+ansible_ssh_private_key_file=../.ssh/SSH_key_for_My_Test_Servers.pem
+#[DB_SERVERS:vars]
+#ansible_user=ubuntu
+#ansible_ssh_private_key_file=../.ssh/SSH_key_for_My_Test_Servers.pem

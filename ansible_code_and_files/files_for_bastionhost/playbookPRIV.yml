@@ -1,0 +1,26 @@
+---
+ - name: Setting up a PRIVATEserver for work
+   hosts: PRIV_SERVERS
+   become: yes
+
+   vars:
+    source_file1: ../private_server/index2.html
+    destin_file1: /var/www/html/index.html
+
+   tasks:
+    - name: updating repositories
+      shell: yum -y update
+
+    - name: install apache web-server
+      yum: name=httpd state=latest
+
+    - name: start apache
+      service: name=httpd state=started enabled=yes
+
+    - name: copy internet page
+      copy: src={{ source_file1 }} dest={{ destin_file1 }} mode=0555
+      notify: Restart apache
+
+   handlers:
+     - name: Restart apache
+       service: name=httpd state=restarted

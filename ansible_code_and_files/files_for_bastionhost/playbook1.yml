@@ -1,0 +1,8 @@
+---
+- name: Test connection to bastionhost server
+  hosts: all
+  become: yes
+
+  tasks:
+   - name: ping server
+     ping:
