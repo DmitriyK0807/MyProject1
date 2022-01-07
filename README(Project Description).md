@@ -31,7 +31,7 @@ For every type of server it's own security group will be created.
 
 ABOUT ANSIBLE:
 Ansible is used for setting all servers for work and transfering all necessary files.
-Ansible is used on local machine to set up Bastion Host server and transfer file there
+Ansible is used on local machine to set up Bastion Host server and transfer files there,
 then ansible will be used on Bastion Host server to connect, set up and transfer files to all other server.
 On web-servers there will be a publicaly available internet page with public information.
 On private servers there will be a private web page with private company information, wich is taken from database.
